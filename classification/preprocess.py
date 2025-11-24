@@ -98,13 +98,13 @@ def divide_lesions():
     class_dict_path = os.path.join(root, "lesion_slice_classes_organized.npy")
     class_dict = np.load(class_dict_path, allow_pickle=True).item()
     class_lesions = []
-    for i in range(7):
+    for i in range(args.num_classes):
         class_lesions.append([])
     for lesion in lesions:
         class_lesions[int(class_dict[lesion.split('.')[0]])-1].append(lesion)
     train_lesions = []
     test_lesions = []
-    for i in range(7):
+    for i in range(args.num_classes):
         random.shuffle(class_lesions[i])
         offset = int(len(class_lesions[i]) * 0.8)
         train_lesions += class_lesions[i][:offset]
@@ -163,13 +163,13 @@ def train_val_split():
         for phase in phases:
             make_dir(os.path.join(args.val_path, phase))
     class_lesions = []
-    for i in range(7):
+    for i in range(args.num_classes):
         class_lesions.append([])
     for lesion in lesions:
         class_lesions[int(class_dict[lesion.split('.')[0]]) - 1].append(lesion)
     train_lesions = []
     val_lesions = []
-    for i in range(7):
+    for i in range(args.num_classes):
         random.shuffle(class_lesions[i])
         offset = int(len(class_lesions[i]) * (1-args.val_ratio))
         train_lesions += class_lesions[i][:offset]

@@ -70,7 +70,7 @@ def test():
         if patient not in patient_class_pred:
             patient_class_pred[patient] = [0]*args.num_classes
             patient_class_label[patient] = label.item()
-            patient_pred_tensors[patient] = np.zeros((1, 7), dtype=np.float)
+            patient_pred_tensors[patient] = np.zeros((1, args.num_classes), dtype=np.float)
 
         lesions = lesions.cuda().float()
         label = label.cuda()

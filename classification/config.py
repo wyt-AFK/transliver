@@ -26,7 +26,7 @@ parser.add_argument("--seed", type=int, help="random seed",
 parser.add_argument("--transform", action="store_true", help="whether to augment",
                     dest="transform")
 parser.add_argument("--num-classes", type=int, help="classes number",
-                    dest="num_classes", default=7)
+                    dest="num_classes", default=4)
 parser.add_argument("--num-workers", type=int, help="dataloader workers number",
                     dest="num_workers", default=4)
 parser.add_argument("--data-type", type=str, help="data type",
