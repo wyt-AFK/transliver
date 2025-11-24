@@ -3,7 +3,14 @@ Code for MICCAI2023 [paper](https://link.springer.com/chapter/10.1007/978-3-031-
 
 ![miccai model](imgs/miccai_model.png)
 
-TransLiver is a hybrid framework with ViT backbone for liver lesion classification, which achieves an overall accuracy of 90.9% on an in-house dataset of four CT phases and seven liver lesion classes. We design a pre-processing unit to reduce the annotation cost, where we obtain lesion area on multi-phase CTs from annotations marked on a single phase. To alleviate the limitations of pure transformers, we propose a multi-stage pyramid structure and add convolutional layers to the original transformer encoder, which helps improve the model performance. We use additional cross phase tokens at the last stage to complete a multi-phase fusion, which can focus on cross-phase communication and improve the fusion effectiveness as compared with conventional modes.
+TransLiver is a hybrid framework with ViT backbone for liver lesion classification. The repository now targets the [PLC-CECT dataset](https://www.scidb.cn/en/detail?dataSetId=d685a0b9f8974a2a9d7c880be1dc36e9), which provides four CT phases and four liver-related lesion categories:
+
+- Hepatocellular carcinoma (HCC)
+- Intrahepatic cholangiocarcinoma (ICC)
+- Combined hepatocellular cholangiocarcinoma (cHCC-CCA)
+- Non-liver cancer
+
+We design a pre-processing unit to reduce annotation cost by obtaining lesion areas on multi-phase CTs from annotations marked on a single phase. To alleviate the limitations of pure transformers, we propose a multi-stage pyramid structure and add convolutional layers to the original transformer encoder, which helps improve the model performance. Additional cross phase tokens at the last stage complete a multi-phase fusion, focusing on cross-phase communication and improving fusion effectiveness as compared with conventional modes.
 
 ## Requirements
 
