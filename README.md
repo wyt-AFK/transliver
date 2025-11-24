@@ -3,19 +3,48 @@ Code for MICCAI2023 [paper](https://link.springer.com/chapter/10.1007/978-3-031-
 
 ![miccai model](imgs/miccai_model.png)
 
-TransLiver is a hybrid framework with ViT backbone for liver lesion classification, which achieves an overall accuracy of 90.9% on an in-house dataset of four CT phases and seven liver lesion classes. We design a pre-processing unit to reduce the annotation cost, where we obtain lesion area on multi-phase CTs from annotations marked on a single phase. To alleviate the limitations of pure transformers, we propose a multi-stage pyramid structure and add convolutional layers to the original transformer encoder, which helps improve the model performance. We use additional cross phase tokens at the last stage to complete a multi-phase fusion, which can focus on cross-phase communication and improve the fusion effectiveness as compared with conventional modes.
+TransLiver is a hybrid framework with ViT backbone for liver lesion classification. The repository now targets the [PLC-CECT dataset](https://www.scidb.cn/en/detail?dataSetId=d685a0b9f8974a2a9d7c880be1dc36e9), which provides four CT phases and four liver-related lesion categories:
+
+- Hepatocellular carcinoma (HCC)
+- Intrahepatic cholangiocarcinoma (ICC)
+- Combined hepatocellular cholangiocarcinoma (cHCC-CCA)
+- Non-liver cancer
+
+We design a pre-processing unit to reduce annotation cost by obtaining lesion areas on multi-phase CTs from annotations marked on a single phase. To alleviate the limitations of pure transformers, we propose a multi-stage pyramid structure and add convolutional layers to the original transformer encoder, which helps improve the model performance. Additional cross phase tokens at the last stage complete a multi-phase fusion, focusing on cross-phase communication and improving fusion effectiveness as compared with conventional modes.
 
 ## Requirements
 
 We use Python 3.9.12 in our project. The main packages are included in `requirements.txt`.
 
+### Environment setup
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+GPU training is recommended. Install the CUDA-enabled versions of PyTorch and related packages that match your system if the defaults in `requirements.txt` do not.
+
 ## Dataset
 
-Please prepare your own single-phase annotated data with lesion position and class. The data and its position label should be placed in `/path/to/your/dataset/phase` and `/path/to/your/dataset/phase_label`, e.g., `/dataset/artery` and `/dataset/artery_label`. The class label should be placed in `/path/to/lesions`, which is the directory of pre-processed lesion data.
+The project targets the [PLC-CECT dataset](https://www.scidb.cn/en/detail?dataSetId=d685a0b9f8974a2a9d7c880be1dc36e9), which provides four phases per study and four lesion types (HCC, ICC, cHCC-CCA, Non-liver cancer).
 
-The data and position labels should be processed to `.nii.gz`, and the class labels should be processed to one json file with the lesion id as the key and the class id as the value.
+1. Download the dataset from the link above and extract it locally.
+2. Convert the CT volumes and lesion masks for each phase to `.nii.gz` if they are not already provided in that format.
+3. Organize each phase (e.g., `arterial`, `portal`, `delay`, `non-contrast`) into separate folders such as:
 
-We have given parts of data processing codes in `./register/reg_preprocess.py`, `./register/reg_postprocess.py`, and `./classification/preprocess.py`. You can also process your data with your own methods, but you should change the data reading mode.
+   ```
+   /dataset/arterial
+   /dataset/portal
+   /dataset/delay
+   /dataset/noncontrast
+   ```
+
+4. Place the corresponding lesion masks in phase-specific directories that mirror the image layout, e.g., `/dataset/arterial_label`, `/dataset/portal_label`, etc.
+5. Create a class label JSON file mapping each lesion ID to its class ID (0–3) and store it in `/path/to/lesions`, which is the directory of pre-processed lesion crops.
+
+The scripts in `./register/reg_preprocess.py`, `./register/reg_postprocess.py`, and `./classification/preprocess.py` illustrate expected data formats and can be adapted if your layout differs.
 
 ## Getting Started
 
@@ -34,17 +63,31 @@ The voxelmorph code in pytorch is in reference of [VoxelMorph-torch](https://git
 
 #### classification
 
-`./classification/preprocess.py`: preprocess for classification
+`./classification/preprocess.py`: preprocess for classification. Update the paths in `classification/config.py` to point to your processed lesion crops and label JSON before running:
+
+```bash
+python classification/preprocess.py
+```
 
 ### Train
 
 Get pretrain weights of [CMT-S](https://github.com/huawei-noah/Efficient-AI-Backbones/tree/master/cmt_pytorch) in `./pre`.
 
-Please execute `./classification/run.sh`.
+Adjust hyperparameters and dataset locations in `classification/config.py`, then start training:
+
+```bash
+bash classification/run.sh
+```
+
+The default configuration trains a four-class model consistent with PLC-CECT labels.
 
 ### Inference
 
-Please run `./classification/test.py`.
+Update checkpoint and data paths in `classification/config.py`, then run:
+
+```bash
+python classification/test.py
+```
 
 ## BibTeX
 

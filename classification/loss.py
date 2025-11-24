@@ -46,7 +46,7 @@ class CenterLoss(nn.Module):
         feat_dim (int): feature dimension.
     """
 
-    def __init__(self, num_classes=7, feat_dim=7, use_gpu=True):
+    def __init__(self, num_classes=4, feat_dim=7, use_gpu=True):
         super(CenterLoss, self).__init__()
         self.num_classes = num_classes
         self.feat_dim = feat_dim

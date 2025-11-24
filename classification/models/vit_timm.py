@@ -199,7 +199,7 @@ class MultiPhaseVisionTransformer(VisionTransformer):
                  drop_rate=0.,
                  attn_drop_rate=0.1,
                  drop_path_rate=0.2,
-                 num_classes=7,
+                 num_classes=4,
                  num_heads=8,
                  img_size=224,
                  patch_size=16,
