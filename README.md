@@ -32,7 +32,18 @@ The project targets the [PLC-CECT dataset](https://www.scidb.cn/en/detail?dataSe
 
 1. Download the dataset from the link above and extract it locally.
 2. Convert the CT volumes and lesion masks for each phase to `.nii.gz` if they are not already provided in that format.
-3. Organize each phase (e.g., `arterial`, `portal`, `delay`, `non-contrast`) into separate folders such as:
+3. If your raw PLC-CECT folder follows the official release layout (``ct_files``, ``liver_mask_files``, ``mask_files``, and ``patient_data.csv``), run the helper script to reorganize it into the structure expected by the registration and classification pipelines:
+
+   ```bash
+   python prepare_plc_cect.py \
+     --source-root /path/to/raw/PLC_CECT \
+     --dest-root   /path/to/prepared/PLC_CECT \
+     --save-lesion-classes
+   ```
+
+   The script creates phase-specific folders named `artery`, `venous`, `delayed`, and `plain` plus their `_label` and `_liver` counterparts. It also writes `lesion_classes.npy` (if `--save-lesion-classes` is set) using the `cancer_type` field in `patient_data.csv`. Adjust `--phase-map` if your phase codes differ from the default `C1/C2/C3/P` mapping.
+
+4. For custom layouts, organize each phase (e.g., `arterial`, `portal`, `delay`, `non-contrast`) into separate folders such as:
 
    ```
    /dataset/arterial
@@ -41,10 +52,9 @@ The project targets the [PLC-CECT dataset](https://www.scidb.cn/en/detail?dataSe
    /dataset/noncontrast
    ```
 
-4. Place the corresponding lesion masks in phase-specific directories that mirror the image layout, e.g., `/dataset/arterial_label`, `/dataset/portal_label`, etc.
-5. Create a class label JSON file mapping each lesion ID to its class ID (0–3) and store it in `/path/to/lesions`, which is the directory of pre-processed lesion crops.
+   Place the corresponding lesion masks in phase-specific directories that mirror the image layout, e.g., `/dataset/arterial_label`, `/dataset/portal_label`, etc. Create a class label JSON file mapping each lesion ID to its class ID (0–3) and store it in `/path/to/lesions`, which is the directory of pre-processed lesion crops.
 
-The scripts in `./register/reg_preprocess.py`, `./register/reg_postprocess.py`, and `./classification/preprocess.py` illustrate expected data formats and can be adapted if your layout differs.
+The scripts in `./prepare_plc_cect.py`, `./register/reg_preprocess.py`, `./register/reg_postprocess.py`, and `./classification/preprocess.py` illustrate expected data formats and can be adapted if your layout differs.
 
 ## Getting Started
 
